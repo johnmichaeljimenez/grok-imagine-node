@@ -150,8 +150,21 @@ async function main() {
 			console.log(`\nDone! Video saved to: ${filepath}`);
 		}
 	} catch (error) {
-		console.error('Generation failed:', error?.message || error);
-		if (error?.status) console.error('Status:', error.status);
+		console.error('Generation failed:', error);
+
+		if (error?.response) {
+			console.error('HTTP status:     ', error.response.status);
+			console.error('Status text:     ', error.response.statusText);
+			console.error('Response headers:', error.response.headers);
+
+			let body = '';
+			try {
+				body = await error.response.text();
+			} catch { }
+			console.error('Raw response body:', body);
+		} else if (error?.message) {
+			console.error('Error message:', error.message);
+		}
 	}
 }
 
